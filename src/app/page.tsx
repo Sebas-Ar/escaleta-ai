@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NewsStoreProvider } from '@/providers/news-store-provider'
 import { DashboardView } from '@/components/dashboard/dashboard-view'
+import { UserProfile } from '@/components/user-profile'
 import { NewsItem } from '@/types'
 
 export const dynamic = 'force-dynamic'
@@ -25,6 +26,7 @@ export default async function Home() {
                 <h1 className="text-3xl font-bold text-slate-900">Escaleta.ai</h1>
                 <p className="text-slate-500">Panel de Control de Noticias</p>
              </div>
+             <UserProfile />
         </header>
         <DashboardView />
       </main>
