@@ -22,13 +22,21 @@ export async function updateNewsStatus(id: string, status: NewsStatus) {
 export async function updateNewsPriority(items: { id: string; priority: number }[]) {
   const supabase = await createClient()
   
-  // Upsert allows bulk updates if primary key is present
-  const { error } = await supabase
-    .from('news')
-    .upsert(items, { onConflict: 'id' })
+  const results = await Promise.all(
+    items.map(({ id, priority }) =>
+      supabase
+        .from('news')
+        .update({ priority })
+        .eq('id', id)
+        .select('id')
+        .single()
+    )
+  )
 
-  if (error) {
-    throw new Error('Failed to reorder news')
+  const failed = results.find(result => result.error)
+
+  if (failed?.error) {
+    throw new Error(failed.error.message || 'Failed to reorder news')
   }
   
   revalidatePath('/')

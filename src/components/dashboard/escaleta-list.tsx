@@ -19,7 +19,7 @@ import { NewsItem } from '@/types'
 import { SortableNewsCard } from './sortable-news-card'
 import { useNewsStore } from '@/providers/news-store-provider'
 import { updateNewsPriority } from '@/app/actions'
-import { startTransition, useId } from 'react'
+import { startTransition } from 'react'
 
 interface EscaletaListProps {
   items: NewsItem[]
@@ -27,7 +27,8 @@ interface EscaletaListProps {
 
 export function EscaletaList({ items }: EscaletaListProps) {
   const reorderNews = useNewsStore((state) => state.reorderNews)
-  const dndContextId = useId()
+  const dndContextId = 'news-dnd-context'
+  const sortableContextId = 'news-sortable-context'
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -86,6 +87,7 @@ export function EscaletaList({ items }: EscaletaListProps) {
       <SortableContext
         items={items.map(i => i.id)}
         strategy={verticalListSortingStrategy}
+        id={sortableContextId}
       >
         <div className="space-y-3">
             {items.map((item) => (
