@@ -3,9 +3,17 @@
 import { createClient } from '@/lib/supabase/server'
 import { NewsStatus } from '@/types'
 import { revalidatePath } from 'next/cache'
+import { sendWhatsAppMessage } from '@/lib/whatsapp'
 
 export async function updateNewsStatus(id: string, status: NewsStatus) {
   const supabase = await createClient()
+
+  // Fetch news details for notification
+  const { data: newsItem } = await supabase
+    .from('news')
+    .select('title, journalist_phone')
+    .eq('id', id)
+    .single()
 
   const { error } = await supabase
     .from('news')
@@ -14,6 +22,19 @@ export async function updateNewsStatus(id: string, status: NewsStatus) {
 
   if (error) {
     throw new Error('Failed to update news status')
+  }
+
+  // Send WhatsApp notification
+  if (newsItem?.journalist_phone) {
+    const message = status === 'approved'
+      ? `Hola, tu noticia "${newsItem.title}" ha sido aceptada.`
+      : status === 'rejected'
+        ? `Hola, tu noticia "${newsItem.title}" ha sido rechazada.`
+        : null
+    
+    if (message) {
+      await sendWhatsAppMessage(newsItem.journalist_phone, message)
+    }
   }
 
   revalidatePath('/')

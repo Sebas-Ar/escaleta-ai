@@ -9,6 +9,7 @@ export interface NewsItem {
   priority: number;
   journalist_phone: string;
   estimated_duration: string | null;
+  journalist_name?: string | null;
 }
 
 export type NewsState = {
@@ -24,3 +25,12 @@ export type NewsActions = {
 };
 
 export type NewsStore = NewsState & NewsActions;
+
+export interface Journalist {
+  id: string;
+  created_at: string;
+  name: string;
+  phone: string;
+  email: string | null;
+  active: boolean;
+}

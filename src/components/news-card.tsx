@@ -3,7 +3,7 @@
 import { NewsItem } from '@/types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Phone, Clock } from 'lucide-react'
+import { Phone, Clock, User } from 'lucide-react'
 import { useTransition } from 'react'
 import { updateNewsStatus } from '@/app/actions'
 
@@ -43,7 +43,7 @@ export function NewsCard({ item, isOverlay }: NewsCardProps) {
         {item.content}
       </p>
 
-      <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+      <div className="flex items-center gap-3 text-xs text-gray-400 mb-3 flex-wrap">
         <div className="flex items-center gap-1">
           <Clock size={12} />
           <span>{format(new Date(item.created_at), "HH:mm", { locale: es })}</span>
@@ -52,6 +52,12 @@ export function NewsCard({ item, isOverlay }: NewsCardProps) {
           <Phone size={12} />
           <span>{item.journalist_phone}</span>
         </div>
+        {item.journalist_name && (
+          <div className="flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
+            <User size={12} />
+            <span className="font-medium">{item.journalist_name}</span>
+          </div>
+        )}
       </div>
 
       {item.status === 'pending' && (
